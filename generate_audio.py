@@ -14,14 +14,22 @@ def generate_audio(text, filename, voice_id='Joanna', audio_model='polly'):
     Args:
         text: Text to convert to speech
         filename: Output filename (full path)
-        voice_id: Voice ID for the TTS model
+        voice_id: Voice ID for the TTS model (Polly format)
         audio_model: 'polly' or 'deepgram' (default: polly)
 
     Returns:
         bool: True if successful, False otherwise
     """
     if audio_model == 'deepgram':
-        return _generate_audio_deepgram(text, filename, voice_id)
+        # Map Polly voice IDs to Deepgram models
+        voice_mapping = {
+            'Joanna': 'aura-asteria-en',    # Female US
+            'Matthew': 'aura-arcas-en',     # Male US
+            'Salli': 'aura-luna-en'         # Female US
+        }
+        deepgram_model = voice_mapping.get(voice_id, 'aura-asteria-en')
+        print(f"Mapping Polly voice '{voice_id}' to Deepgram model '{deepgram_model}'")
+        return _generate_audio_deepgram(text, filename, deepgram_model)
     else:
         return _generate_audio_polly(text, filename, voice_id)
 
