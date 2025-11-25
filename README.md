@@ -2,6 +2,10 @@
 
 An intelligent English vocabulary learning agent that generates interactive word cards with AI-powered explanations, anime-style images, natural audio pronunciation, and leverages state-of-the-art AI models for English conversation.
 
+**🚀 [Live Demo](https://english-word-learn-agent.onrender.com)** | **📱 [Mobile Access](https://english-word-learn-agent.onrender.com)** | **💻 [GitHub](https://github.com/Cosmoto-jian/English-Word-Learn-Agent)**
+
+> **Note:** First visit may take 10-30 seconds to load (free tier cold start)
+
 ## Features
 
 - **Multi-Model AI Support**: Choose between Mistral AI, DeepSeek, or Google Gemini for text generation
@@ -15,6 +19,8 @@ An intelligent English vocabulary learning agent that generates interactive word
 - **Social Integration**: Quick access to social media platforms
 
 ## Demo
+
+**🌐 [Try it Live!](https://english-word-learn-agent.onrender.com)**
 
 ![AI Word Master Demo](static/demo.png)
 
@@ -315,6 +321,45 @@ The server includes automatic port management:
 - Stored in `public/generate_picture/`
 - Instant loading for previously generated words
 - Reduces API calls and generation time
+
+## Deployment
+
+### Deploy to Render (Recommended)
+
+This application is deployed on [Render](https://render.com) with the following configuration:
+
+**Live URL:** https://english-word-learn-agent.onrender.com
+
+#### Quick Deploy Steps:
+
+1. **Fork or clone this repository**
+2. **Sign up on [Render](https://render.com)** with your GitHub account
+3. **Create a new Web Service** and connect your repository
+4. **Configure build settings:**
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 server:app`
+5. **Add environment variables** (at least one text model and one audio model):
+   ```
+   GOOGLE_API_KEY=your_key
+   DEEPGRAM_API_KEY=your_key
+   ```
+6. **Deploy!** Render will automatically build and deploy your app
+
+#### Free Tier Limitations:
+- 15-minute idle timeout (app sleeps after inactivity)
+- 512 MB RAM
+- Temporary file storage (generated files reset on restart)
+
+For production use, consider upgrading to a paid plan for:
+- Always-on service (no cold starts)
+- Persistent storage
+- More resources
+
+### Alternative Platforms:
+- **Vercel**: Good for frontend, limited for long-running tasks
+- **Railway**: Similar to Render, easy deployment
+- **Fly.io**: Global edge deployment
+- **Heroku**: Classic PaaS platform
 
 ## License
 
