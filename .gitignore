@@ -1,0 +1,68 @@
+# Environment Variables
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask
+instance/
+.webassets-cache
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+server.log
+
+# Generated Files
+static/*.mp3
+static/chat_audio_*.mp3
+public/generate_picture/*.png
+
+# AWS Credentials (should NEVER be committed)
+.aws/
+credentials
+
+# Temporary Files
+*.tmp
+*.bak
+*.backup
+
+# OS Files
+._*
+Thumbs.db
+
+# Vercel
+.vercel

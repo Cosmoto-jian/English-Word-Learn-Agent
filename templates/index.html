@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Word Card</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <!-- Iconify for social media icons -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+</head>
+
+<body>
+    <!-- Background Container -->
+    <div id="box" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
+
+    <div class="scene">
+        <div class="card" id="card">
+            <!-- Front Face: Intro & Input -->
+            <div class="card-face card-front">
+                <div class="content-wrapper">
+                    <!-- Social Media Icons -->
+                    <div class="social-icons">
+                        <a href="https://x.com/wj2029?s=21" target="_blank" class="glass-icon" aria-label="Twitter">
+                            <iconify-icon icon="mdi:twitter"></iconify-icon>
+                        </a>
+                        <a href="https://github.com/Cosmoto-jian" target="_blank" class="glass-icon" aria-label="GitHub">
+                            <iconify-icon icon="mdi:github"></iconify-icon>
+                        </a>
+                        <a href="/public/imgs/wechat.jpg" target="_blank" class="glass-icon" aria-label="WeChat">
+                            <iconify-icon icon="mdi:wechat"></iconify-icon>
+                        </a>
+                        <a href="/public/imgs/group1.jpg" target="_blank" class="glass-icon" aria-label="Group">
+                            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M8 6C6.89543 6 6 6.89543 6 8V40C6 41.1046 6.89543 42 8 42H40C41.1046 42 42 41.1046 42 40V8C42 6.89543 41.1046 6 40 6H8ZM24 19C24 16.2458 21.7542 14 19 14C16.2246 14 14 16.2246 14 19C14 21.7542 16.2458 24 19 24C21.7542 24 24 21.7542 24 19ZM35 21.9999C35 19.7823 33.2177 18 31.0001 18C28.7825 18 26.9795 19.7823 27.0002 21.9999C27.0002 24.2175 28.7825 25.9998 31.0001 25.9998C33.2177 25.9998 35 24.2175 35 21.9999ZM19 33.0792V37H11V28.8171C13.0381 27.6715 15.9959 27 19.5 27C20.5316 27 21.5159 27.0582 22.4432 27.1696C20.5282 28.4358 19 30.4251 19 33.0792ZM37 29.1651C35.4532 28.4246 33.3888 28 31 28C25.702 28 22 30.0886 22 33.0792V37H37V29.1651Z"></path>
+                            </svg>
+                        </a>
+                        <a href="https://xhslink.com/m/9LOIwmr15IH" target="_blank" class="glass-icon" aria-label="RedNote">
+                            <img src="/public/imgs/rednote.jpeg" alt="RedNote" class="icon-img">
+                        </a>
+                    </div>
+
+                    <h1>AI Word Master</h1>
+                    <p class="subtitle">The smartest way to learn English.</p>
+
+                    <div class="input-group">
+                        <input type="text" id="wordInput" placeholder="Enter a word to learn (optional)">
+
+                        <select id="levelSelect" class="select-full">
+                            <option value="junior">初中 (Junior)</option>
+                            <option value="senior">高中 (Senior)</option>
+                            <option value="cet4">四级 (CET-4)</option>
+                            <option value="cet6">六级 (CET-6)</option>
+                            <option value="toefl">托福 (TOEFL)</option>
+                            <option value="sat">SAT</option>
+                        </select>
+
+                        <select id="voiceSelect" class="select-full">
+                            <option value="Joanna">Joanna (Female, US)</option>
+                            <option value="Matthew">Matthew (Male, US)</option>
+                            <option value="Salli">Salli (Female, US)</option>
+                        </select>
+
+                        <div class="select-row">
+                            <select id="textModelSelect" class="select-half">
+                                <option value="mistral">Mistral Large</option>
+                                <option value="deepseek">DeepSeek Chat</option>
+                                <option value="gemini">Google Gemini</option>
+                            </select>
+                            <select id="audioModelSelect" class="select-half">
+                                <option value="polly">Amazon Polly</option>
+                                <option value="deepgram">Deepgram TTS</option>
+                            </select>
+                        </div>
+
+                        <button id="startBtn">Start Learning</button>
+                    </div>
+
+                    <p class="hint">Leave empty for a random word.</p>
+                </div>
+            </div>
+
+            <!-- Back Face: Generated Content -->
+            <div class="card-face card-back">
+                <!-- Component 1: Word Card -->
+                <div class="word-card-container">
+                    <div class="card-header" id="cardHeader">
+                        <!-- Image will be injected here via CSS background -->
+                        <div class="header-overlay"></div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="title-section">
+                            <h2 id="wordTitle">Loading...</h2>
+                        </div>
+
+                        <div class="phonetic-section">
+                            <span id="phoneticText" class="phonetic-text"></span>
+                            <button class="audio-btn" id="wordAudioBtn">
+                                <img src="https://api.iconify.design/solar:play-stream-bold.svg" alt="Play" class="play-icon" id="wordPlayIcon">
+                            </button>
+                        </div>
+
+                        <div id="cardContent" class="scroll-content">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </div>
+
+                    <!-- Floating Action Buttons -->
+                    <button class="fab fab-next" id="nextBtn" aria-label="Next Word">
+                        <span class="icon">⟳</span>
+                    </button>
+                    <button class="fab fab-home" id="homeBtn" aria-label="Back to Home">
+                        <span class="icon">🏠</span>
+                    </button>
+                </div>
+
+                <!-- Component 2: Chat -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3>Chat with AI</h3>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message assistant">
+                            <div class="message-content">What would you like to talk about?</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Type your message..." class="chat-input">
+                        <button id="sendBtn" class="send-btn">
+                            <img src="https://api.iconify.design/pixel:message-dots-solid.svg" alt="Send" class="send-icon">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+
+
+    <!-- Loading Overlay -->
+    <div class="loader-overlay" id="loader" aria-hidden="true">
+        <div class="spinner"></div>
+        <p>Generating Magic...</p>
+    </div>
+
+    <script src="/static/script.js"></script>
+
+    <!-- GridArrayBg Background -->
+    <script type="module">
+        import { GridArrayBg } from "/static/jsm/GridArrayBg.module.js";
+
+        let colorbg = new GridArrayBg({
+            dom: "box",
+            colors: ["#FFF2D7","#FFE0B5","#F8C794","#D8AE7E","#FFF2D7","#FFE0B5"],
+            loop: true
+        });
+    </script>
+</body>
+
+</html>
