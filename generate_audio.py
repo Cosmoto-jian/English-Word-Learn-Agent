@@ -42,11 +42,28 @@ def _generate_audio_polly(text, filename, voice_id='Joanna', engine='neural'):
             print("Error: Empty text provided for audio generation")
             return False
 
-        # Initialize Polly client using AWS profile
-        profile_name = os.environ.get("AWS_PROFILE", "EAP001")
+        # Initialize Polly client
+        # Support both local (profile) and cloud (env vars) authentication
         region = os.environ.get("AWS_REGION", "us-east-1")
 
-        session = boto3.Session(profile_name=profile_name)
+        # Check if AWS credentials are provided via environment variables (cloud deployment)
+        aws_access_key = os.environ.get("AWS_ACCESS_KEY_ID")
+        aws_secret_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
+
+        if aws_access_key and aws_secret_key:
+            # Use environment variables (for cloud deployment like Render)
+            print(f"Using AWS credentials from environment variables")
+            session = boto3.Session(
+                aws_access_key_id=aws_access_key,
+                aws_secret_access_key=aws_secret_key,
+                region_name=region
+            )
+        else:
+            # Use profile (for local development)
+            profile_name = os.environ.get("AWS_PROFILE", "EAP001")
+            print(f"Using AWS profile: {profile_name}")
+            session = boto3.Session(profile_name=profile_name)
+
         polly = session.client('polly', region_name=region)
 
         # Ensure filename is absolute
