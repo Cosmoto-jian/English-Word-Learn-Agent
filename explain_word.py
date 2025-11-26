@@ -10,6 +10,9 @@ def load_env_vars():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     env_path = os.path.join(script_dir, '.env')
 
+    # Check if running in cloud environment (Render, Heroku, etc.)
+    is_cloud = os.environ.get('PORT') or os.environ.get('RENDER') or os.environ.get('DYNO')
+
     try:
         with open(env_path, 'r') as f:
             for line in f:
@@ -30,7 +33,9 @@ def load_env_vars():
                     os.environ[key] = value
         print(f"Loaded environment variables from {env_path}")
     except FileNotFoundError:
-        print(f"Warning: {env_path} not found.")
+        # Only show warning in local development, not in cloud deployment
+        if not is_cloud:
+            print(f"Warning: {env_path} not found.")
     except Exception as e:
         print(f"Error loading .env file: {e}")
 
