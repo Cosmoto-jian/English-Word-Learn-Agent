@@ -61,11 +61,16 @@ def _generate_audio_polly(text, filename, voice_id='Joanna', engine='neural'):
         if aws_access_key and aws_secret_key:
             # Use environment variables (for cloud deployment like Render)
             print(f"Using AWS credentials from environment variables")
+            # Clear AWS_PROFILE to prevent boto3 from looking for config files
+            old_profile = os.environ.pop('AWS_PROFILE', None)
             session = boto3.Session(
                 aws_access_key_id=aws_access_key,
                 aws_secret_access_key=aws_secret_key,
                 region_name=region
             )
+            # Restore AWS_PROFILE if it was set
+            if old_profile:
+                os.environ['AWS_PROFILE'] = old_profile
         else:
             # Use profile (for local development)
             profile_name = os.environ.get("AWS_PROFILE", "EAP001")
