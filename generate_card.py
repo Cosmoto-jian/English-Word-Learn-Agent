@@ -245,7 +245,8 @@ def generate_card_data(target_word=None, voice_id='Joanna', level='junior', text
     explanation_text = writing_text if writing_text else explanation
 
     # Parallel execution using ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    # Increased workers from 3 to 6 for better performance
+    with ThreadPoolExecutor(max_workers=6) as executor:
         # Submit all tasks
         # For image: pass None as filename, word parameter will determine cache path
         future_image = executor.submit(generate_image, definition, None, word)

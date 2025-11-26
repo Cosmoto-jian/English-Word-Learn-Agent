@@ -163,6 +163,22 @@ async function generateWordCard(targetWord = null) {
     }
 }
 
+// Helper function to check if audio file is ready
+async function waitForAudio(url, maxAttempts = 10, interval = 300) {
+    for (let i = 0; i < maxAttempts; i++) {
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            if (response.ok) {
+                return true;
+            }
+        } catch (error) {
+            // Continue trying
+        }
+        await new Promise(resolve => setTimeout(resolve, interval));
+    }
+    return false;
+}
+
 function displayWordCard(data) {
     // Set word title
     document.getElementById('wordTitle').textContent = data.word;
@@ -193,7 +209,7 @@ function displayWordCard(data) {
         phoneticText.textContent = '';
     }
 
-    // Set header image
+    // Set header image (loads progressively)
     const header = document.getElementById('cardHeader');
     if (data.image_url) {
         header.style.backgroundImage = `url(${data.image_url})`;
@@ -229,14 +245,29 @@ function displayWordCard(data) {
             sectionDiv.appendChild(heading);
             sectionDiv.appendChild(paragraph);
 
-            // Add audio button for Writing section
+            // Add audio button for Writing section with progressive loading
             if (sectionName === 'Writing' && data.explanation_audio_url) {
                 const audioBtn = document.createElement('button');
                 audioBtn.className = 'audio-btn';
                 audioBtn.style.marginLeft = '10px';
-                audioBtn.innerHTML = '<img src="https://api.iconify.design/solar:play-stream-bold.svg" alt="Play" class="play-icon" id="writingPlayIcon">';
-                audioBtn.onclick = () => toggleAudio(data.explanation_audio_url, 'writingPlayIcon');
+                audioBtn.disabled = true; // Initially disabled
+                audioBtn.style.opacity = '0.5'; // Show loading state
+                audioBtn.innerHTML = '<img src="https://api.iconify.design/svg-spinners:3-dots-fade.svg" alt="Loading" class="play-icon" id="writingPlayIcon">';
                 heading.appendChild(audioBtn);
+
+                // Wait for audio file to be ready, then enable button
+                waitForAudio(data.explanation_audio_url).then(ready => {
+                    if (ready) {
+                        audioBtn.disabled = false;
+                        audioBtn.style.opacity = '1';
+                        audioBtn.innerHTML = '<img src="https://api.iconify.design/solar:play-stream-bold.svg" alt="Play" class="play-icon" id="writingPlayIcon">';
+                        audioBtn.onclick = () => toggleAudio(data.explanation_audio_url, 'writingPlayIcon');
+                    } else {
+                        // Audio failed to load
+                        audioBtn.innerHTML = '<img src="https://api.iconify.design/solar:close-circle-bold.svg" alt="Error" class="play-icon" style="filter: hue-rotate(320deg);">';
+                        audioBtn.title = 'Audio generation failed';
+                    }
+                });
             }
 
             content.appendChild(sectionDiv);
@@ -254,6 +285,37 @@ function displayWordCard(data) {
     if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
+    }
+
+    // Progressive loading: Enable word audio button when ready
+    const wordAudioBtn = document.getElementById('wordAudioBtn');
+    if (wordAudioBtn && data.word_audio_url) {
+        const wordPlayIcon = document.getElementById('wordPlayIcon');
+
+        // Disable button and show loading state
+        wordAudioBtn.disabled = true;
+        wordAudioBtn.style.opacity = '0.5';
+        if (wordPlayIcon) {
+            wordPlayIcon.src = 'https://api.iconify.design/svg-spinners:3-dots-fade.svg';
+        }
+
+        // Wait for word audio to be ready
+        waitForAudio(data.word_audio_url).then(ready => {
+            if (ready) {
+                wordAudioBtn.disabled = false;
+                wordAudioBtn.style.opacity = '1';
+                if (wordPlayIcon) {
+                    wordPlayIcon.src = 'https://api.iconify.design/solar:play-stream-bold.svg';
+                }
+            } else {
+                // Audio failed
+                if (wordPlayIcon) {
+                    wordPlayIcon.src = 'https://api.iconify.design/solar:close-circle-bold.svg';
+                    wordPlayIcon.style.filter = 'hue-rotate(320deg)';
+                }
+                wordAudioBtn.title = 'Audio generation failed';
+            }
+        });
     }
 }
 
